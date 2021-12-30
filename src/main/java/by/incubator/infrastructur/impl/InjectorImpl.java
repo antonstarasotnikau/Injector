@@ -16,7 +16,7 @@ public class InjectorImpl implements Injector {
     private final Map<String, Class<?>> bindCache = new HashMap<>();
 
     @Override
-    public <T> Provider<T> getProvider(Class<T> type) throws TooManyConstructorsException {
+    public <T> Provider<T> getProvider(Class<T> type) throws TooManyConstructorsException, ConstructorNotFoundException {
         return (Provider<T>) createProvider(bindCache.get(type.getSimpleName()));
     }
 
@@ -30,7 +30,7 @@ public class InjectorImpl implements Injector {
 
     }
 
-    private <T> Provider<T> createProvider(Class<T> impl) throws TooManyConstructorsException {
+    private <T> Provider<T> createProvider(Class<T> impl) throws TooManyConstructorsException, ConstructorNotFoundException {
         Provider<T> provider = null;
         Class<?>[] paramTypes = getParamTypes(impl);
         if(paramTypes.length != 0) {
@@ -40,17 +40,19 @@ public class InjectorImpl implements Injector {
         return new ProviderImpl<>(impl);
     }
 
-    private Class<?>[] getParamTypes(Class<?> impl) throws TooManyConstructorsException {
+    private Class<?>[] getParamTypes(Class<?> impl) throws TooManyConstructorsException, ConstructorNotFoundException {
         Class<?>[] paramTypes;
         List<Constructor<?>> constructorList = new ArrayList<>(List.of(impl.getDeclaredConstructors()));
         constructorList.removeIf(constructor -> !constructor.isAnnotationPresent(Inject.class));
-            if(constructorList.size() > 1)
-                throw new TooManyConstructorsException("The class doesn't contain any annotated constructor @Inject");
+        if(constructorList.size() > 1)
+            throw new TooManyConstructorsException("The class contains more than one annotated constructor @Inject");
+        if(constructorList.size() == 0)
+            throw new ConstructorNotFoundException("The class doesn't contain any annotated constructor @Inject");
         paramTypes = constructorList.get(0).getParameterTypes();
         return paramTypes;
     }
 
-    private Object[] getListInitArgs(Class<?>[] paramTypes) throws TooManyConstructorsException {
+    private Object[] getListInitArgs(Class<?>[] paramTypes) throws TooManyConstructorsException, ConstructorNotFoundException {
         List<Object> listInitArgs = new ArrayList<>();
         for (Class<?> pType: paramTypes)
             listInitArgs.add(getProvider(pType).getInstance());
