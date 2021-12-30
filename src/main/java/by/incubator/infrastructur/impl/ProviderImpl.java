@@ -8,19 +8,25 @@ import java.util.List;
 public class ProviderImpl<T> implements Provider<T> {
     private final Class<T> impl;
     private final Class<?>[] paramTypes;
-    private final List<Object> listInitArgs;
+    private final Object[] listInitArgs;
 
-    public ProviderImpl(Class<T> impl, Class<?>[] paramTypes, List<Object> listInitArgs) {
+    public ProviderImpl(Class<T> impl, Class<?>[] paramTypes, Object[] listInitArgs) {
         this.impl = impl;
         this.paramTypes = paramTypes;
         this.listInitArgs = listInitArgs;
+    }
+
+    public ProviderImpl(Class<T> impl) {
+        this.impl = impl;
+        this.paramTypes = null;
+        this.listInitArgs = null;
     }
 
     @Override
     public T getInstance() {
         T obj = null;
         try {
-            obj = impl.getConstructor(paramTypes).newInstance(listInitArgs);
+            obj = impl.getDeclaredConstructor(paramTypes).newInstance(listInitArgs);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             e.printStackTrace();
         }

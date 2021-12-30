@@ -31,23 +31,25 @@ public class InjectorImpl implements Injector {
     private <T> Provider<T> createProvider(Class<T> impl) {
         Provider<T> provider = null;
         Class<?>[] paramTypes = getParamTypes(impl);
-        List<Object> listInitArgs = getListInitArgs(paramTypes);
-
-        return new ProviderImpl<T>(impl, paramTypes, listInitArgs);
+        if(paramTypes.length != 0) {
+            Object[] listInitArgs = getListInitArgs(paramTypes);
+            return new ProviderImpl<>(impl, paramTypes, listInitArgs);
+        }
+        return new ProviderImpl<>(impl);
     }
 
     private Class<?>[] getParamTypes(Class<?> impl) {
         Class<?>[] paramTypes;
-        List<Constructor<?>> constructorList = new ArrayList<>(List.of(impl.getConstructors()));
+        List<Constructor<?>> constructorList = new ArrayList<>(List.of(impl.getDeclaredConstructors()));
         constructorList.removeIf(constructor -> !constructor.isAnnotationPresent(Inject.class));
         paramTypes = constructorList.get(0).getParameterTypes();
         return paramTypes;
     }
 
-    private List<Object> getListInitArgs(Class<?>[] paramTypes) {
+    private Object[] getListInitArgs(Class<?>[] paramTypes) {
         List<Object> listInitArgs = new ArrayList<>();
         for (Class<?> pType: paramTypes)
             listInitArgs.add(getProvider(pType).getInstance());
-        return  listInitArgs;
+        return  listInitArgs.toArray();
     }
 }
