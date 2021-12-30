@@ -72,4 +72,12 @@ public class InjectorImplTest extends TestCase {
         }
     }
 
+    public void testEmptyBind() throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
+        Injector injector = new InjectorImpl();
+
+        Provider<TestInterface> provider = injector.getProvider(TestInterface.class);
+
+        assertNull(provider);
+    }
+
 }
