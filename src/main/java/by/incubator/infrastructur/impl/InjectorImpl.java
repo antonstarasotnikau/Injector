@@ -11,12 +11,11 @@ import java.util.List;
 import java.util.Map;
 
 public class InjectorImpl implements Injector {
-    private final Map<String, Class> bindCache = new HashMap<>();
+    private final Map<String, Class<?>> bindCache = new HashMap<>();
 
     @Override
     public <T> Provider<T> getProvider(Class<T> type) {
-
-        return new ProviderImpl<>(bindCache.get(type.getSimpleName()));
+        return (Provider<T>) createProvider(bindCache.get(type.getSimpleName()));
     }
 
     @Override
@@ -27,5 +26,28 @@ public class InjectorImpl implements Injector {
     @Override
     public <T> void bindSingleton(Class<T> intf, Class<? extends T> impl) {
 
+    }
+
+    private <T> Provider<T> createProvider(Class<T> impl) {
+        Provider<T> provider = null;
+        Class<?>[] paramTypes = getParamTypes(impl);
+        List<Object> listInitArgs = getListInitArgs(paramTypes);
+
+        return new ProviderImpl<T>(impl, paramTypes, listInitArgs);
+    }
+
+    private Class<?>[] getParamTypes(Class<?> impl) {
+        Class<?>[] paramTypes;
+        List<Constructor<?>> constructorList = new ArrayList<>(List.of(impl.getConstructors()));
+        constructorList.removeIf(constructor -> !constructor.isAnnotationPresent(Inject.class));
+        paramTypes = constructorList.get(0).getParameterTypes();
+        return paramTypes;
+    }
+
+    private List<Object> getListInitArgs(Class<?>[] paramTypes) {
+        List<Object> listInitArgs = new ArrayList<>();
+        for (Class<?> pType: paramTypes)
+            listInitArgs.add(getProvider(pType).getInstance());
+        return  listInitArgs;
     }
 }
