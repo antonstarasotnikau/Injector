@@ -3,6 +3,7 @@ package by.incubator.infrastructur.impl;
 import by.incubator.infrastructur.Injector;
 import by.incubator.infrastructur.Provider;
 import by.incubator.infrastructur.annotation.Inject;
+import by.incubator.infrastructur.exception.BindingNotFoundException;
 import by.incubator.infrastructur.exception.ConstructorNotFoundException;
 import by.incubator.infrastructur.exception.TooManyConstructorsException;
 
@@ -16,7 +17,7 @@ public class InjectorImpl implements Injector {
     private final Map<String, Class<?>> bindCache = new HashMap<>();
 
     @Override
-    public <T> Provider<T> getProvider(Class<T> type) throws TooManyConstructorsException, ConstructorNotFoundException {
+    public <T> Provider<T> getProvider(Class<T> type) throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
         return (Provider<T>) createProvider(bindCache.get(type.getSimpleName()));
     }
 
@@ -30,7 +31,7 @@ public class InjectorImpl implements Injector {
 
     }
 
-    private <T> Provider<T> createProvider(Class<T> impl) throws TooManyConstructorsException, ConstructorNotFoundException {
+    private <T> Provider<T> createProvider(Class<T> impl) throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
         Provider<T> provider = null;
         Class<?>[] paramTypes = getParamTypes(impl);
         if(paramTypes.length != 0) {
@@ -52,10 +53,15 @@ public class InjectorImpl implements Injector {
         return paramTypes;
     }
 
-    private Object[] getListInitArgs(Class<?>[] paramTypes) throws TooManyConstructorsException, ConstructorNotFoundException {
+    private Object[] getListInitArgs(Class<?>[] paramTypes) throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
         List<Object> listInitArgs = new ArrayList<>();
         for (Class<?> pType: paramTypes)
-            listInitArgs.add(getProvider(pType).getInstance());
+            if (!bindCache.containsKey(pType.getSimpleName())) {
+                throw new BindingNotFoundException("Type doesn't have bind in map");
+            } else {
+                listInitArgs.add(getProvider(pType).getInstance());
+            }
+
         return  listInitArgs.toArray();
     }
 }
