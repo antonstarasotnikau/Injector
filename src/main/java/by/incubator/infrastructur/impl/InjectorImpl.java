@@ -18,7 +18,9 @@ public class InjectorImpl implements Injector {
 
     @Override
     public <T> Provider<T> getProvider(Class<T> type) throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
-        return (Provider<T>) createProvider(bindCache.get(type.getSimpleName()));
+        if(bindCache.containsKey(type.getSimpleName()))
+            return (Provider<T>) createProvider(bindCache.get(type.getSimpleName()));
+        return null;
     }
 
     @Override
