@@ -16,7 +16,7 @@ public class InjectorImpl implements Injector {
     private final Map<String, Class<?>> bindCache = new HashMap<>();
 
     @Override
-    public <T> Provider<T> getProvider(Class<T> type) {
+    public <T> Provider<T> getProvider(Class<T> type) throws TooManyConstructorsException {
         return (Provider<T>) createProvider(bindCache.get(type.getSimpleName()));
     }
 
@@ -30,7 +30,7 @@ public class InjectorImpl implements Injector {
 
     }
 
-    private <T> Provider<T> createProvider(Class<T> impl) {
+    private <T> Provider<T> createProvider(Class<T> impl) throws TooManyConstructorsException {
         Provider<T> provider = null;
         Class<?>[] paramTypes = getParamTypes(impl);
         if(paramTypes.length != 0) {
@@ -40,21 +40,17 @@ public class InjectorImpl implements Injector {
         return new ProviderImpl<>(impl);
     }
 
-    private Class<?>[] getParamTypes(Class<?> impl) {
+    private Class<?>[] getParamTypes(Class<?> impl) throws TooManyConstructorsException {
         Class<?>[] paramTypes;
         List<Constructor<?>> constructorList = new ArrayList<>(List.of(impl.getDeclaredConstructors()));
         constructorList.removeIf(constructor -> !constructor.isAnnotationPresent(Inject.class));
-        try {
-            if(constructorList.size() == 0)
+            if(constructorList.size() > 1)
                 throw new TooManyConstructorsException("The class doesn't contain any annotated constructor @Inject");
-        } catch (TooManyConstructorsException e) {
-            e.printStackTrace();
-        }
         paramTypes = constructorList.get(0).getParameterTypes();
         return paramTypes;
     }
 
-    private Object[] getListInitArgs(Class<?>[] paramTypes) {
+    private Object[] getListInitArgs(Class<?>[] paramTypes) throws TooManyConstructorsException {
         List<Object> listInitArgs = new ArrayList<>();
         for (Class<?> pType: paramTypes)
             listInitArgs.add(getProvider(pType).getInstance());

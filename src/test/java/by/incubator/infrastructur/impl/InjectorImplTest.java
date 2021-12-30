@@ -2,19 +2,15 @@ package by.incubator.infrastructur.impl;
 
 import by.incubator.infrastructur.Injector;
 import by.incubator.infrastructur.Provider;
-import by.incubator.infrastructur.annotation.Inject;
-import by.incubator.modelForTest.InterfaceForConstructorWithParameters;
-import by.incubator.modelForTest.TestInterface;
-import by.incubator.modelForTest.impl.ConstructorWithParameters;
-import by.incubator.modelForTest.impl.TestInterfaceImpl;
+import by.incubator.infrastructur.exception.TooManyConstructorsException;
+import by.incubator.modelForTest.*;
+import by.incubator.modelForTest.impl.*;
 import junit.framework.TestCase;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class InjectorImplTest extends TestCase {
 
-    public void testGetProvider() {
+    public void testGetProvider() throws TooManyConstructorsException {
         Injector injector = new InjectorImpl();
         injector.bind(TestInterface.class, TestInterfaceImpl.class);
 
@@ -25,7 +21,7 @@ public class InjectorImplTest extends TestCase {
         assertSame(TestInterfaceImpl.class, provider.getInstance().getClass());
     }
 
-    public void testGetProviderForConstructorWithParameter() {
+    public void testGetProviderForConstructorWithParameter() throws TooManyConstructorsException {
         Injector injector = new InjectorImpl();
         injector.bind(TestInterface.class, TestInterfaceImpl.class);
         injector.bind(InterfaceForConstructorWithParameters.class, ConstructorWithParameters.class);
@@ -35,5 +31,20 @@ public class InjectorImplTest extends TestCase {
         assertNotNull(provider);
         assertNotNull(provider.getInstance());
         assertSame(ConstructorWithParameters.class, provider.getInstance().getClass());
+    }
+
+    public void testTooManyConstructors() {
+        Injector injector = new InjectorImpl();
+        injector.bind(TestInterface.class, TestInterfaceImpl.class);
+        injector.bind(TooManyConstructorsInterface.class, TooManyConstructorsImp.class);
+
+        try {
+            Provider<TooManyConstructorsInterface> provider = injector.getProvider(TooManyConstructorsInterface.class);
+            fail("exception doesn't catch");
+        } catch (TooManyConstructorsException e) {
+            assertEquals(e.getMessage(),"The class doesn't contain any annotated constructor @Inject");
+        }
+
+
     }
 }
