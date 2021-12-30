@@ -3,7 +3,9 @@ package by.incubator.infrastructur.impl;
 import by.incubator.infrastructur.Injector;
 import by.incubator.infrastructur.Provider;
 import by.incubator.infrastructur.annotation.Inject;
+import by.incubator.modelForTest.InterfaceForConstructorWithParameters;
 import by.incubator.modelForTest.TestInterface;
+import by.incubator.modelForTest.impl.ConstructorWithParameters;
 import by.incubator.modelForTest.impl.TestInterfaceImpl;
 import junit.framework.TestCase;
 
@@ -23,9 +25,15 @@ public class InjectorImplTest extends TestCase {
         assertSame(TestInterfaceImpl.class, provider.getInstance().getClass());
     }
 
-    public void testBind() {
-    }
+    public void testGetProviderForConstructorWithParameter() {
+        Injector injector = new InjectorImpl();
+        injector.bind(TestInterface.class, TestInterfaceImpl.class);
+        injector.bind(InterfaceForConstructorWithParameters.class, ConstructorWithParameters.class);
 
-    public void testBindSingleton() {
+        Provider<InterfaceForConstructorWithParameters> provider = injector.getProvider(InterfaceForConstructorWithParameters.class);
+
+        assertNotNull(provider);
+        assertNotNull(provider.getInstance());
+        assertSame(ConstructorWithParameters.class, provider.getInstance().getClass());
     }
 }
