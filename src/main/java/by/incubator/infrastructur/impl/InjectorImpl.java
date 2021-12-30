@@ -3,6 +3,8 @@ package by.incubator.infrastructur.impl;
 import by.incubator.infrastructur.Injector;
 import by.incubator.infrastructur.Provider;
 import by.incubator.infrastructur.annotation.Inject;
+import by.incubator.infrastructur.exception.ConstructorNotFoundException;
+import by.incubator.infrastructur.exception.TooManyConstructorsException;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -42,6 +44,12 @@ public class InjectorImpl implements Injector {
         Class<?>[] paramTypes;
         List<Constructor<?>> constructorList = new ArrayList<>(List.of(impl.getDeclaredConstructors()));
         constructorList.removeIf(constructor -> !constructor.isAnnotationPresent(Inject.class));
+        try {
+            if(constructorList.size() == 0)
+                throw new TooManyConstructorsException("The class doesn't contain any annotated constructor @Inject");
+        } catch (TooManyConstructorsException e) {
+            e.printStackTrace();
+        }
         paramTypes = constructorList.get(0).getParameterTypes();
         return paramTypes;
     }
