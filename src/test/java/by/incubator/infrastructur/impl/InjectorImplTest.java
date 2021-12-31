@@ -2,9 +2,7 @@ package by.incubator.infrastructur.impl;
 
 import by.incubator.infrastructur.Injector;
 import by.incubator.infrastructur.Provider;
-import by.incubator.infrastructur.exception.BindingNotFoundException;
-import by.incubator.infrastructur.exception.ConstructorNotFoundException;
-import by.incubator.infrastructur.exception.TooManyConstructorsException;
+import by.incubator.infrastructur.exception.*;
 import by.incubator.modelForTest.*;
 import by.incubator.modelForTest.impl.*;
 import junit.framework.TestCase;
@@ -78,6 +76,20 @@ public class InjectorImplTest extends TestCase {
         Provider<TestInterface> provider = injector.getProvider(TestInterface.class);
 
         assertNull(provider);
+    }
+
+    public void testSingleton() throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
+        Injector injector = new InjectorImpl();
+        injector.bind(TestInterface.class, SingletonImpl.class);
+        injector.bindSingleton(TestInterface.class, SingletonImpl.class);
+
+        Provider<TestInterface> provider = injector.getProvider(TestInterface.class);
+        Provider<TestInterface> provider2 = injector.getProvider(TestInterface.class);
+
+        assertNotNull(provider);
+        assertNotNull(provider.getInstance());
+        assertSame(SingletonImpl.class, provider.getInstance().getClass());
+        assertSame(provider.getInstance().getClass(), provider2.getInstance().getClass());
     }
 
 }
