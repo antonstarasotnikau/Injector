@@ -33,16 +33,10 @@ public class ProviderImpl<T> implements Provider<T> {
     }
 
     @Override
-    public T getInstance() {
-        T obj = null;
+    public T getInstance() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         if(impl.isAnnotationPresent(Singleton.class) && singletonObject != null)
             return singletonObject;
 
-        try {
-            obj = impl.getDeclaredConstructor(paramTypes).newInstance(listInitArgs);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        return obj;
+        return impl.getDeclaredConstructor(paramTypes).newInstance(listInitArgs);
     }
 }
