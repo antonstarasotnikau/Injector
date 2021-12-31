@@ -9,6 +9,7 @@ import by.incubator.infrastructur.exception.ConstructorNotFoundException;
 import by.incubator.infrastructur.exception.TooManyConstructorsException;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +20,7 @@ public class InjectorImpl implements Injector {
     private final Map<String, Object> bindSingletonCache = new HashMap<>();
 
     @Override
-    public <T> Provider<T> getProvider(Class<T> type) throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
+    public <T> Provider<T> getProvider(Class<T> type) throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         synchronized (type) {
             if (bindCache.containsKey(type.getSimpleName())) {
                 Class<T> impl = (Class<T>) bindCache.get(type.getSimpleName());
@@ -40,16 +41,11 @@ public class InjectorImpl implements Injector {
     }
 
     @Override
-    public <T> void bindSingleton(Class<T> intf, Class<? extends T> impl) {
-        try {
-            bindSingletonCache.put(intf.getSimpleName(), createProvider(impl).getInstance());
-        } catch (TooManyConstructorsException | ConstructorNotFoundException | BindingNotFoundException e) {
-            e.printStackTrace();
-        }
+    public <T> void bindSingleton(Class<T> intf, Class<? extends T> impl) throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+        bindSingletonCache.put(intf.getSimpleName(), createProvider(impl).getInstance());
     }
 
-    private <T> Provider<T> createProvider(Class<T> impl) throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
-        Provider<T> provider = null;
+    private <T> Provider<T> createProvider(Class<T> impl) throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Class<?>[] paramTypes = getParamTypes(impl);
         if(paramTypes.length != 0) {
             Object[] listInitArgs = getListInitArgs(paramTypes);
@@ -70,7 +66,7 @@ public class InjectorImpl implements Injector {
         return paramTypes;
     }
 
-    private Object[] getListInitArgs(Class<?>[] paramTypes) throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
+    private Object[] getListInitArgs(Class<?>[] paramTypes) throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         List<Object> listInitArgs = new ArrayList<>();
         for (Class<?> pType: paramTypes)
             if (!bindCache.containsKey(pType.getSimpleName())) {

@@ -7,10 +7,12 @@ import junit.framework.TestCase;
 import modelForTest.*;
 import modelForTest.impl.*;
 
+import java.lang.reflect.InvocationTargetException;
+
 
 public class InjectorImplTest extends TestCase {
 
-    public void testGetProvider() throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
+    public void testGetProvider() throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Injector injector = new InjectorImpl();
         injector.bind(TestInterface.class, TestInterfaceImpl.class);
 
@@ -21,7 +23,7 @@ public class InjectorImplTest extends TestCase {
         assertSame(TestInterfaceImpl.class, provider.getInstance().getClass());
     }
 
-    public void testGetProviderForConstructorWithParameter() throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
+    public void testGetProviderForConstructorWithParameter() throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Injector injector = new InjectorImpl();
         injector.bind(TestInterface.class, TestInterfaceImpl.class);
         injector.bind(InterfaceForConstructorWithParameters.class, ConstructorWithParameters.class);
@@ -33,7 +35,7 @@ public class InjectorImplTest extends TestCase {
         assertSame(ConstructorWithParameters.class, provider.getInstance().getClass());
     }
 
-    public void testTooManyConstructors() throws  ConstructorNotFoundException, BindingNotFoundException{
+    public void testTooManyConstructors() throws ConstructorNotFoundException, BindingNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Injector injector = new InjectorImpl();
         injector.bind(TestInterface.class, TestInterfaceImpl.class);
         injector.bind(TooManyConstructorsInterface.class, TooManyConstructorsImp.class);
@@ -46,7 +48,7 @@ public class InjectorImplTest extends TestCase {
         }
     }
 
-    public void testConstructorNotFound() throws TooManyConstructorsException, BindingNotFoundException{
+    public void testConstructorNotFound() throws TooManyConstructorsException, BindingNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Injector injector = new InjectorImpl();
         injector.bind(ConstructorNotFoundInterface.class, ConstructorNotFoundImpl.class);
 
@@ -58,7 +60,7 @@ public class InjectorImplTest extends TestCase {
         }
     }
 
-    public void testBindingNotFound() throws TooManyConstructorsException, ConstructorNotFoundException{
+    public void testBindingNotFound() throws TooManyConstructorsException, ConstructorNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Injector injector = new InjectorImpl();
         injector.bind(ParameterWithoutBindingInterface.class, ParameterWithoutBindingImpl.class);
 
@@ -70,7 +72,7 @@ public class InjectorImplTest extends TestCase {
         }
     }
 
-    public void testEmptyBind() throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
+    public void testEmptyBind() throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Injector injector = new InjectorImpl();
 
         Provider<TestInterface> provider = injector.getProvider(TestInterface.class);
@@ -78,7 +80,7 @@ public class InjectorImplTest extends TestCase {
         assertNull(provider);
     }
 
-    public void testSingleton() throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
+    public void testSingleton() throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Injector injector = new InjectorImpl();
         injector.bind(TestInterface.class, SingletonImpl.class);
         injector.bindSingleton(TestInterface.class, SingletonImpl.class);
@@ -92,7 +94,7 @@ public class InjectorImplTest extends TestCase {
         assertSame(provider.getInstance().getClass(), provider2.getInstance().getClass());
     }
 
-    public void testSingletonLazyInitialization() throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
+    public void testSingletonLazyInitialization() throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
         Injector injector = new InjectorImpl();
         injector.bind(TestInterface.class, SingletonImpl.class);
 
