@@ -3,6 +3,7 @@ package by.incubator.infrastructur.impl;
 import by.incubator.infrastructur.Injector;
 import by.incubator.infrastructur.Provider;
 import by.incubator.infrastructur.annotation.Inject;
+import by.incubator.infrastructur.annotation.Singleton;
 import by.incubator.infrastructur.exception.BindingNotFoundException;
 import by.incubator.infrastructur.exception.ConstructorNotFoundException;
 import by.incubator.infrastructur.exception.TooManyConstructorsException;
@@ -15,11 +16,16 @@ import java.util.Map;
 
 public class InjectorImpl implements Injector {
     private final Map<String, Class<?>> bindCache = new HashMap<>();
+    private final Map<String, Object> bindSingletonCache = new HashMap<>();
 
     @Override
     public <T> Provider<T> getProvider(Class<T> type) throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
-        if(bindCache.containsKey(type.getSimpleName()))
-            return (Provider<T>) createProvider(bindCache.get(type.getSimpleName()));
+        if(bindCache.containsKey(type.getSimpleName())) {
+            Class<T> impl = (Class<T>) bindCache.get(type.getSimpleName());
+            if (impl.isAnnotationPresent(Singleton.class) && bindSingletonCache.containsKey(type.getSimpleName()))
+                return new ProviderImpl<>(impl, (T) bindSingletonCache.get(type.getSimpleName()));
+            return createProvider(impl);
+        }
         return null;
     }
 
@@ -30,7 +36,11 @@ public class InjectorImpl implements Injector {
 
     @Override
     public <T> void bindSingleton(Class<T> intf, Class<? extends T> impl) {
-
+        try {
+            bindSingletonCache.put(intf.getSimpleName(), createProvider(impl).getInstance());
+        } catch (TooManyConstructorsException | ConstructorNotFoundException | BindingNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private <T> Provider<T> createProvider(Class<T> impl) throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
