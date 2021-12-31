@@ -3,9 +3,9 @@ package by.incubator.infrastructur.impl;
 import by.incubator.infrastructur.Injector;
 import by.incubator.infrastructur.Provider;
 import by.incubator.infrastructur.exception.*;
-import by.incubator.modelForTest.*;
-import by.incubator.modelForTest.impl.*;
 import junit.framework.TestCase;
+import modelForTest.*;
+import modelForTest.impl.*;
 
 
 public class InjectorImplTest extends TestCase {
