@@ -22,8 +22,11 @@ public class InjectorImpl implements Injector {
     public <T> Provider<T> getProvider(Class<T> type) throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
         if(bindCache.containsKey(type.getSimpleName())) {
             Class<T> impl = (Class<T>) bindCache.get(type.getSimpleName());
-            if (impl.isAnnotationPresent(Singleton.class) && bindSingletonCache.containsKey(type.getSimpleName()))
+            if (impl.isAnnotationPresent(Singleton.class)) {
+                if (!bindSingletonCache.containsKey(type.getSimpleName()))
+                    bindSingleton(type, impl);
                 return new ProviderImpl<>(impl, (T) bindSingletonCache.get(type.getSimpleName()));
+            }
             return createProvider(impl);
         }
         return null;
