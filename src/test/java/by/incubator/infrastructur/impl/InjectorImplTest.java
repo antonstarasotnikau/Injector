@@ -92,4 +92,17 @@ public class InjectorImplTest extends TestCase {
         assertSame(provider.getInstance().getClass(), provider2.getInstance().getClass());
     }
 
+    public void testSingletonLazyInitialization() throws TooManyConstructorsException, ConstructorNotFoundException, BindingNotFoundException {
+        Injector injector = new InjectorImpl();
+        injector.bind(TestInterface.class, SingletonImpl.class);
+
+        Provider<TestInterface> provider = injector.getProvider(TestInterface.class);
+        Provider<TestInterface> provider2 = injector.getProvider(TestInterface.class);
+
+        assertNotNull(provider);
+        assertNotNull(provider.getInstance());
+        assertSame(SingletonImpl.class, provider.getInstance().getClass());
+        assertSame(provider.getInstance().getClass(), provider2.getInstance().getClass());
+    }
+
 }
