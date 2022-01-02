@@ -1,8 +1,8 @@
-package modelForTest.impl;
+package by.incubator.infrastructur.impl.modelForTest.impl;
 
 import by.incubator.infrastructur.annotation.Inject;
-import modelForTest.InterfaceForConstructorWithParameters;
-import modelForTest.TestInterface;
+import by.incubator.infrastructur.impl.modelForTest.InterfaceForConstructorWithParameters;
+import by.incubator.infrastructur.impl.modelForTest.TestInterface;
 
 public class ConstructorWithParameters implements InterfaceForConstructorWithParameters {
     TestInterface testInterface;

@@ -1,8 +1,8 @@
-package modelForTest.impl;
+package by.incubator.infrastructur.impl.modelForTest.impl;
 
 import by.incubator.infrastructur.annotation.Inject;
-import modelForTest.ParameterWithoutBindingInterface;
-import modelForTest.TestInterface;
+import by.incubator.infrastructur.impl.modelForTest.ParameterWithoutBindingInterface;
+import by.incubator.infrastructur.impl.modelForTest.TestInterface;
 
 public class ParameterWithoutBindingImpl implements ParameterWithoutBindingInterface {
 

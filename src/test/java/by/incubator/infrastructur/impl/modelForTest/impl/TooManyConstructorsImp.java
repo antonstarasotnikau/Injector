@@ -1,8 +1,8 @@
-package modelForTest.impl;
+package by.incubator.infrastructur.impl.modelForTest.impl;
 
 import by.incubator.infrastructur.annotation.Inject;
-import modelForTest.TestInterface;
-import modelForTest.TooManyConstructorsInterface;
+import by.incubator.infrastructur.impl.modelForTest.TestInterface;
+import by.incubator.infrastructur.impl.modelForTest.TooManyConstructorsInterface;
 
 public class TooManyConstructorsImp implements TooManyConstructorsInterface {
     TestInterface testInterface;

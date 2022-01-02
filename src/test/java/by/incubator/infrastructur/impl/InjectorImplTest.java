@@ -3,9 +3,9 @@ package by.incubator.infrastructur.impl;
 import by.incubator.infrastructur.Injector;
 import by.incubator.infrastructur.Provider;
 import by.incubator.infrastructur.exception.*;
+import by.incubator.infrastructur.impl.modelForTest.*;
+import by.incubator.infrastructur.impl.modelForTest.impl.*;
 import junit.framework.TestCase;
-import modelForTest.*;
-import modelForTest.impl.*;
 
 import java.lang.reflect.InvocationTargetException;
 
