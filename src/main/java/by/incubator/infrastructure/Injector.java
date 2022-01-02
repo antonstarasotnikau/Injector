@@ -1,8 +1,8 @@
-package by.incubator.infrastructur;
+package by.incubator.infrastructure;
 
-import by.incubator.infrastructur.exception.BindingNotFoundException;
-import by.incubator.infrastructur.exception.ConstructorNotFoundException;
-import by.incubator.infrastructur.exception.TooManyConstructorsException;
+import by.incubator.infrastructure.exception.BindingNotFoundException;
+import by.incubator.infrastructure.exception.ConstructorNotFoundException;
+import by.incubator.infrastructure.exception.TooManyConstructorsException;
 
 import java.lang.reflect.InvocationTargetException;
 

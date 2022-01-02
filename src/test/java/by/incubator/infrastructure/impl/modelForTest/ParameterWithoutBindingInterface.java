@@ -1,4 +1,4 @@
-package by.incubator.infrastructur.impl.modelForTest;
+package by.incubator.infrastructure.impl.modelForTest;
 
 public interface ParameterWithoutBindingInterface {
 }

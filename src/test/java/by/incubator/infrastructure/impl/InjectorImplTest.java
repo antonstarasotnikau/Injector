@@ -1,10 +1,10 @@
-package by.incubator.infrastructur.impl;
+package by.incubator.infrastructure.impl;
 
-import by.incubator.infrastructur.Injector;
-import by.incubator.infrastructur.Provider;
-import by.incubator.infrastructur.exception.*;
-import by.incubator.infrastructur.impl.modelForTest.*;
-import by.incubator.infrastructur.impl.modelForTest.impl.*;
+import by.incubator.infrastructure.Injector;
+import by.incubator.infrastructure.Provider;
+import by.incubator.infrastructure.exception.*;
+import by.incubator.infrastructure.impl.modelForTest.*;
+import by.incubator.infrastructure.impl.modelForTest.impl.*;
 import junit.framework.TestCase;
 
 import java.lang.reflect.InvocationTargetException;

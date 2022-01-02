@@ -1,7 +1,7 @@
-package by.incubator.infrastructur.impl;
+package by.incubator.infrastructure.impl;
 
-import by.incubator.infrastructur.Provider;
-import by.incubator.infrastructur.annotation.Singleton;
+import by.incubator.infrastructure.Provider;
+import by.incubator.infrastructure.annotation.Singleton;
 
 import java.lang.reflect.InvocationTargetException;
 

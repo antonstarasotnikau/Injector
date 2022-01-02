@@ -1,4 +1,4 @@
-package by.incubator.infrastructur;
+package by.incubator.infrastructure;
 
 import java.lang.reflect.InvocationTargetException;
 

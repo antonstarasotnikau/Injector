@@ -1,4 +1,4 @@
-package by.incubator.infrastructur.annotation;
+package by.incubator.infrastructure.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,4 +1,4 @@
-package by.incubator.infrastructur.exception;
+package by.incubator.infrastructure.exception;
 
 public class BindingNotFoundException extends RuntimeException {
     public BindingNotFoundException(String message) {

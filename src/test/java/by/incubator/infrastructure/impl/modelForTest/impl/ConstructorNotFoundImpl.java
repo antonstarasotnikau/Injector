@@ -1,6 +1,6 @@
-package by.incubator.infrastructur.impl.modelForTest.impl;
+package by.incubator.infrastructure.impl.modelForTest.impl;
 
-import by.incubator.infrastructur.impl.modelForTest.ConstructorNotFoundInterface;
+import by.incubator.infrastructure.impl.modelForTest.ConstructorNotFoundInterface;
 
 public class ConstructorNotFoundImpl implements ConstructorNotFoundInterface {
     public ConstructorNotFoundImpl(TestInterfaceImpl testInterface) {
